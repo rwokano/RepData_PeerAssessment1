@@ -21,7 +21,7 @@ The following code will set the working directory for my machine, you can commen
 ```r
 setwd("~/Coursera/Data Scientist/5 - Reproducible Research/Peer_Assign_1")
 ```
-The data for this project was provided in a zipped dataset *'activity.zip'*. When it is unzipped there is a file called activity.csv we can read into R. So, let's go ahead and unzip the file and get it into an R object.
+The data for this project was provided in a zipped data set *'activity.zip'*. When it is unzipped there is a file called activity.csv we can read into R. So, let's go ahead and unzip the file and get it into an R object.
 
 ```r
 unzip("activity.zip")
@@ -42,14 +42,17 @@ unlink("activity.csv")
 ## What is mean total number of steps taken per day?
 This is a two fold question. First, there will be a plot of the total number of steps by day, then there will be a calculation of the mean and median number of steps per day.
 ### Plot the total number of steps for the day.
-Days with no values reported (*NA*) are being skipped for this analysis.
+Days with no values reported (*NA*) are being skipped for this analysis. First, I used the Aggregate function to summarize the data by each Date. Then the histogram will be made to show the frequency. Create a break for each 1,000 steps to make the histogram show something valuable.
 
 ```r
 dfTotalSteps<-aggregate(steps~date,dfRawData,sum,na.action=na.omit)
-barplot(dfTotalSteps$steps,names.arg=dfTotalSteps$date, 
-        xlab="Date", 
-        ylab="Total Steps", 
-        main="Total Steps Per Day")
+bars=seq(min(dfTotalSteps$steps), max(dfTotalSteps$steps)+1000,1000)
+hist(dfTotalSteps$steps, 
+     breaks = bars,
+     col="blue",
+     xlab="Total Steps per Day", 
+     ylab="Number of Days", 
+     main="Number of Days Having Number of Steps")
 ```
 
 ![plot of chunk Num_Steps_Barplot](figure/Num_Steps_Barplot.png) 
@@ -87,16 +90,16 @@ The maximum average number of steps was 206.1698 which occurred at 5 minute inte
 
 ## Imputing missing values
 ### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs) 
-To get the number of *NAs* in the orignal dataset we can use the *complete.cases* function to determine how many rows have a missing value.  If we sum the results from that, we will have how many are complete then simply subtract that number from the original number of rows.
+To get the number of *NAs* in the original data set we can use the *complete.cases* function to determine how many rows have a missing value.  If we sum the results from that, we will have how many are complete then simply subtract that number from the original number of rows.
 
 ```r
 vCompCases<-complete.cases(dfRawData)
 numNAs    <-nrow(dfRawData)-sum(vCompCases)
 ```
-The number of *NAs* in the dataset is 2304.
+The number of *NAs* in the data set is 2304.
 
 ### Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-It seems that it would be better to take the average number of steps per that five minute interval to populate the missing data. If I were to use the average for the day, it may skew the results by weighting the days rather than by the interval, so I will use the the average for the interval.  To do that, I will use the Mean by Interval dataset calculated earlier along with the True / False vector I created with the *complete.cases* results I calculated for the *NA* count.  Logically, the Date and the Interval should not be NA, which I confirmed, so only the steps are *NA*. Copy the raw data to a new object where I can fill in the steps from the Mean object if needed.
+It seems that it would be better to take the average number of steps per that five minute interval to populate the missing data. If I were to use the average for the day, it may skew the results by weighting the days rather than by the interval, so I will use the the average for the interval.  To do that, I will use the Mean by Interval data set calculated earlier along with the True / False vector I created with the *complete.cases* results I calculated for the *NA* count.  Logically, the Date and the Interval should not be NA, which I confirmed, so only the steps are *NA*. Copy the raw data to a new object where I can fill in the steps from the Mean object if needed.
 
 ```r
 dfCompleteData<-dfRawData
@@ -106,15 +109,17 @@ for (n in 1:nrow(dfCompleteData))
         dfCompleteData$steps[n]<-dfMeanStepsByInterval$steps[dfMeanStepsByInterval$interval==dfCompleteData[n,"interval"]]
 }
 ```
-Now we have a complete dataset.  Make the same plot as was done with the *NAs* omitted to see if there is any difference observed.  Also, calculate the *Mean* and *Median* as was done above and show the difference, along with an explanation.
+Now we have a complete data set.  Make the same plot as was done with the *NAs* omitted to see if there is any difference observed.  Also, calculate the *Mean* and *Median* as was done above and show the difference, along with an explanation.
 
 ```r
 dfTotalStepsComplete<-aggregate(steps~date,dfCompleteData,sum,na.action=na.omit)
-barplot(dfTotalStepsComplete$steps,
-        names.arg=dfTotalStepsComplete$date, 
-        xlab="Date", 
-        ylab="Total Steps",
-        main="Total Steps Per Day With Imputed Data")
+bars=seq(min(dfTotalStepsComplete$steps), max(dfTotalStepsComplete$steps)+1000,1000)
+hist(dfTotalStepsComplete$steps, 
+     breaks = bars,
+     col="blue",
+     xlab="Total Steps per Day", 
+     ylab="Number of Days", 
+     main="Number of Days Having Number of Steps (with imputed data")
 ```
 
 ![plot of chunk Num_Steps_Barplot_Complete](figure/Num_Steps_Barplot_Complete.png) 
@@ -133,7 +138,7 @@ The median on the other hand would move more toward the mean as the missing data
 
 ## Are there differences in activity patterns between weekdays and weekends?
 ### Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
-Using the dataset with the imputed values for this plot. (per the instructions). Since the date field was converted to a Date datatype when we read the data in, we can use the *weekdays()* function straight away and append a column to the data frame with a *Weekend* or *Weekday* indicator.
+Using the data set with the imputed values for this plot. (per the instructions). Since the date field was converted to a Date datatype when we read the data in, we can use the *weekdays()* function straight away and append a column to the data frame with a *Weekend* or *Weekday* indicator.
 
 ```r
 dfCompleteData$weekpart<-ifelse(weekdays(dfCompleteData$date) %in% c("Saturday","Sunday"),"Weekend","Weekday")
@@ -149,7 +154,7 @@ require(lattice)
 ```
 ## Loading required package: lattice
 ```
-Now, let's go ahead and calculae the aggregate and plot it.
+Now, let's go ahead and calculate the aggregate and plot it.
 
 ```r
 dfMeanStepsByIntervalWeek<-aggregate(steps~interval+weekpart,data=dfCompleteData, FUN="mean",na.action=na.omit)
