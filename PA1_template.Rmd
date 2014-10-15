@@ -38,7 +38,7 @@ unlink("activity.csv")
 This is a two fold question. First, there will be a plot of the total number of steps by day, then there will be a calculation of the mean and median number of steps per day.
 ### Plot the total number of steps for the day.
 Days with no values reported (*NA*) are being skipped for this analysis. First, I used the Aggregate function to summarize the data by each Date. Then the histogram will be made to show the frequency. Create a break for each 1,000 steps to make the histogram show something valuable.
-```{r Num_Steps_Barplot,fig.width=12}
+```{r Num_Steps_Histogram,fig.width=12}
 dfTotalSteps<-aggregate(steps~date,dfRawData,sum,na.action=na.omit)
 bars=seq(min(dfTotalSteps$steps), max(dfTotalSteps$steps)+1000,1000)
 hist(dfTotalSteps$steps, 
@@ -95,7 +95,7 @@ for (n in 1:nrow(dfCompleteData))
 }
 ```
 Now we have a complete data set.  Make the same plot as was done with the *NAs* omitted to see if there is any difference observed.  Also, calculate the *Mean* and *Median* as was done above and show the difference, along with an explanation.
-```{r Num_Steps_Barplot_Complete,fig.width=12}
+```{r Num_Steps_Histogram_Complete,fig.width=12}
 dfTotalStepsComplete<-aggregate(steps~date,dfCompleteData,sum,na.action=na.omit)
 bars=seq(min(dfTotalStepsComplete$steps), max(dfTotalStepsComplete$steps)+1000,1000)
 hist(dfTotalStepsComplete$steps, 

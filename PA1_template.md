@@ -55,7 +55,7 @@ hist(dfTotalSteps$steps,
      main="Number of Days Having Number of Steps")
 ```
 
-![plot of chunk Num_Steps_Barplot](figure/Num_Steps_Barplot.png) 
+![plot of chunk Num_Steps_Histogram](figure/Num_Steps_Histogram.png) 
 ### Calculate the Mean and Median number of steps per day.
 I can use the total number of steps calculated above to get the mean and median.  NA's have already been omitted from the data frame.
 
@@ -122,7 +122,7 @@ hist(dfTotalStepsComplete$steps,
      main="Number of Days Having Number of Steps (with imputed data")
 ```
 
-![plot of chunk Num_Steps_Barplot_Complete](figure/Num_Steps_Barplot_Complete.png) 
+![plot of chunk Num_Steps_Histogram_Complete](figure/Num_Steps_Histogram_Complete.png) 
 
 ```r
 medianStepsComplete<-median(dfTotalStepsComplete$steps)
